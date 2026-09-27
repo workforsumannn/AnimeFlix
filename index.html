@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UltimateSensi Pro — Free Fire & BGMI Sensitivity Calculator</title>
+<meta name="description" content="Free sensitivity calculator for Free Fire MAX and BGMI. Get General, Red Dot, Scope, DPI and Fire Button values from your phone's RAM, refresh rate and playstyle.">
+<style>
+  :root{
+    --bg:#0b0f14;
+    --panel:#121a22;
+    --panel-2:#18232e;
+    --line:#24313f;
+    --text:#e8eef5;
+    --muted:#8fa3b5;
+    --accent:#ff5c1a;
+    --accent-2:#ffb020;
+    --good:#33d17a;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%,#1a2632 0%,var(--bg) 60%);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+  header.hero{padding:64px 0 40px;text-align:center}
+  .badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+  .badge{
+    font-size:12px;font-weight:600;letter-spacing:.4px;
+    background:var(--panel-2);border:1px solid var(--line);
+    padding:6px 12px;border-radius:999px;color:var(--muted)
+  }
+  .eyebrow{
+    font-size:12px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--accent-2);font-weight:700;margin-bottom:14px
+  }
+  h1{
+    font-size:clamp(30px,5.2vw,52px);line-height:1.1;font-weight:800;
+    background:linear-gradient(180deg,#fff,#9fb4c7);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:16px
+  }
+  .sub{color:var(--muted);max-width:640px;margin:0 auto;font-size:16px}
+
+  section{padding:38px 0}
+  h2{font-size:clamp(20px,3vw,28px);font-weight:800;margin-bottom:8px}
+  h2 .tag{
+    font-size:11px;vertical-align:middle;margin-left:8px;
+    background:var(--accent);color:#fff;padding:3px 8px;border-radius:6px;
+    letter-spacing:.5px;font-weight:700
+  }
+  .lead{color:var(--muted);margin-bottom:22px;max-width:680px}
+
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    border:1px solid var(--line);border-radius:var(--radius);padding:22px
+  }
+
+  /* Calculator grid */
+  .calc{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.calc{grid-template-columns:1fr}}
+
+  .field{margin-bottom:14px}
+  label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;letter-spacing:.3px}
+  select,input[type=text]{
+    width:100%;padding:12px 14px;border-radius:10px;
+    background:#0e1620;border:1px solid var(--line);color:var(--text);
+    font-size:14px;outline:none;transition:.15s
+  }
+  select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,92,26,.15)}
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+  button.primary{
+    width:100%;padding:14px;border:0;border-radius:12px;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#1a0e00;font-weight:800;font-size:15px;letter-spacing:.3px;
+    transition:.15s
+  }
+  button.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  button.ghost{
+    padding:9px 14px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;
+    background:transparent;border:1px solid var(--line);color:var(--muted)
+  }
+  button.ghost:hover{border-color:var(--accent);color:var(--text)}
+
+  /* Results */
+  .results-head{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:14px;flex-wrap:wrap;gap:10px
+  }
+  .profile-tag{font-size:12px;color:var(--good);font-weight:700;letter-spacing:.5px}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stat{
+    background:#0e1620;border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;display:flex;justify-content:space-between;align-items:center
+  }
+  .stat span.k{font-size:12px;color:var(--muted)}
+  .stat span.v{font-size:20px;font-weight:800;color:var(--accent-2);font-variant-numeric:tabular-nums}
+  .stat.wide{grid-column:1/-1}
+  .empty{color:var(--muted);font-size:14px;text-align:center;padding:40px 0}
+
+  /* Presets */
+  .preset-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .preset{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;transition:.15s}
+  .preset:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .preset h4{font-size:14px;margin-bottom:4px}
+  .preset .game{font-size:11px;color:var(--accent-2);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+  .preset ul{list-style:none;margin-top:10px;font-size:13px;color:var(--muted)}
+  .preset li{display:flex;justify-content:space-between;padding:2px 0}
+  .preset li b{color:var(--text);font-variant-numeric:tabular-nums}
+
+  /* Invisible name tool */
+  .name-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+  .name-opt{
+    background:#0e1620;border:1px solid var(--line);border-radius:10px;padding:14px;
+    display:flex;flex-direction:column;gap:8px
+  }
+  .name-opt strong{font-size:13px}
+  .name-opt small{color:var(--muted);font-size:12px}
+  .preview-box{
+    background:#0e1620;border:1px dashed var(--line);border-radius:10px;
+    padding:14px;font-size:18px;min-height:54px;display:flex;align-items:center;
+    word-break:break-all
+  }
+  .nick-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .nick{
+    background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+    padding:8px 12px;font-size:14px;cursor:pointer;transition:.15s
+  }
+  .nick:hover{border-color:var(--accent);background:#1f2c39}
+
+  /* Guide table */
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+  td{font-variant-numeric:tabular-nums}
+  tr:last-child td{border-bottom:0}
+  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+
+  /* FAQ */
+  details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+  details[open]{border-color:var(--accent)}
+  summary{cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between;gap:10px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--accent);font-size:18px;line-height:1}
+  details[open] summary::after{content:"–"}
+  details p{color:var(--muted);font-size:14px;margin-top:10px}
+
+  footer{border-top:1px solid var(--line);margin-top:30px;padding:28px 0;text-align:center;color:var(--muted);font-size:13px}
+  footer a{color:var(--accent-2);text-decoration:none}
+  .toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
+    background:var(--good);color:#04180c;font-weight:700;font-size:13px;
+    padding:10px 18px;border-radius:10px;opacity:0;transition:.25s;pointer-events:none;z-index:99
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">🆓 Free · No Login</span>
+      <span class="badge">🎮 FF MAX + BGMI</span>
+      <span class="badge">🛡️ In-game settings only</span>
+    </div>
+    <p class="eyebrow">Free Sensitivity Calculator · 2026</p>
+    <h1>Find Your Headshot Sensitivity<br>for Any Phone</h1>
+    <p class="sub">Enter your phone's RAM, refresh rate and playstyle. Get General, Red Dot, Scope, DPI and Fire Button values — then fine-tune them in Training Mode.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- CALCULATOR -->
+  <section>
+    <div class="calc">
+      <!-- Inputs -->
+      <div class="card">
+        <h2>⚡ Sensitivity &amp; DPI Calculator <span class="tag" id="gameTag">FREE FIRE</span></h2>
+        <p class="lead" style="margin-bottom:18px">Pick your game and hardware profile.</p>
+
+        <div class="field">
+          <label>Game</label>
+          <select id="game">
+            <option value="ff">Free Fire MAX</option>
+            <option value="bgmi">BGMI / PUBG Mobile</option>
+          </select>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>RAM</label>
+            <select id="ram">
+              <option value="2">2 GB</option>
+              <option value="3">3 GB</option>
+              <option value="4" selected>4 GB</option>
+              <option value="6">6 GB</option>
+              <option value="8">8 GB</option>
+              <option value="12">12 GB+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Refresh Rate</label>
+            <select id="hz">
+              <option value="60" selected>60 Hz</option>
+              <option value="90">90 Hz</option>
+              <option value="120">120 Hz</option>
+              <option value="144">144 Hz</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Playstyle</label>
+            <select id="style">
+              <option value="balanced" selected>Balanced</option>
+              <option value="onetap">One-Tap Drag</option>
+              <option value="rusher">Rusher</option>
+              <option value="spray">Full Spray</option>
+              <option value="sniper">Sniper</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Fingers</label>
+            <select id="fingers">
+              <option value="2" selected>2 Finger</option>
+              <option value="3">3 Finger</option>
+              <option value="4">4 Finger Claw</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field" id="gyroWrap" style="display:none">
+          <label>Gyroscope Style</label>
+          <select id="gyro">
+            <option value="full" selected>Full Gyro</option>
+            <option value="scope">Scope-only Gyro</option>
+            <option value="none">Non-Gyro</option>
+          </select>
+        </div>
+
+        <button class="primary" id="calcBtn">CALIBRATE MY SENSITIVITY</button>
+      </div>
+
+      <!-- Results -->
+      <div class="card">
+        <div class="results-head">
+          <h2 style="font-size:16px;margin:0">📊 Your Profile</h2>
+          <span class="profile-tag" id="profileTag"></span>
+        </div>
+        <div id="results">
+          <p class="empty">Set your hardware above and hit <b>Calibrate</b> to see your values.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESETS -->
+  <section>
+    <h2>👑 Playstyle Presets</h2>
+    <p class="lead">Original starting points — not the settings of any specific player. Load one, then tune it in Training Mode.</p>
+    <div class="preset-grid" id="presetGrid"></div>
+  </section>
+
+  <!-- INVISIBLE NAME -->
+  <section>
+    <h2>✨ Invisible Name Space &amp; Nickname Styler</h2>
+    <p class="lead">Copy a Hangul Filler or zero-width space for your Free Fire / BGMI name. Always check the in-game preview before spending a rename card.</p>
+
+    <div class="name-grid">
+      <div class="name-opt">
+        <strong>Hangul Invisible Space</strong>
+        <small>Unicode U+3164 — renders as a blank in most names.</small>
+        <button class="ghost" data-copy="\u3164">Copy Space</button>
+      </div>
+      <div class="name-opt">
+        <strong>Zero-Width Space</strong>
+        <small>Unicode U+200B — useful for spacing / duplicate errors.</small>
+        <button class="ghost" data-copy="\u200B">Copy ZWSP</button>
+      </div>
+      <div class="name-opt">
+        <strong>ⓥ + Invisible</strong>
+        <small>Verified-style tag with an invisible spacer.</small>
+        <button class="ghost" data-copy="ⓥ\u3164">Copy Tag</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Preview (type or paste your name)</label>
+      <input type="text" id="nameInput" placeholder="Your nickname here" maxlength="20">
+    </div>
+    <div class="preview-box" id="namePreview">Your nickname here</div>
+
+    <div class="nick-list" id="nickList"></div>
+  </section>
+
+  <!-- METHODOLOGY -->
+  <section>
+    <h2>🧮 How the Calculator Works <span class="tag">NO BLACK BOX</span></h2>
+    <p class="lead">The formula is simple and rule-based. Here are the exact numbers it uses.</p>
+
+    <h3 style="font-size:15px;margin:16px 0 6px;color:var(--accent-2)">Free Fire MAX — RAM tiers</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>RAM</th><th>General</th><th>Red Dot</th><th>2x</th><th>4x</th><th>Sniper</th><th>Fire Btn</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2 GB</td><td>196</td><td>192</td><td>188</td><td>180</td><td>115</td><td>52%</td></tr>
+          <tr><td>3 GB</td><td>190</td><td>186</td><td>182</td><td>175</td><td>110</td><td>50%</td></tr>
+          <tr><td>4 GB</td><td>182</td><td>178</td><td>174</td><td>168</td><td>104</td><td>48%</td></tr>
+          <tr><td>6 GB</td><td>174</td><td>172</td><td>168</td><td>160</td><td>98</td><td>46%</td></tr>
+          <tr><td>8 GB</td><td>166</td><td>164</td><td>160</td><td>154</td><td>92</td><td>44%</td></tr>
+          <tr><td>12 GB+</td><td>158</td><td>156</td><td>152</td><td>146</td><td>88</td><td>42%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="lead" style="margin-top:20px">
+      <b style="color:var(--text)">Playstyle:</b> One-Tap adds +8 General / +10 Red Dot. Rusher adds +12 General but drops Sniper by 12.
+      Full Spray lowers everything slightly and enlarges the Fire Button by 4%. Sniper drops General by 12 and raises Sniper scope by 24.
+    </p>
+    <p class="lead">
+      <b style="color:var(--text)">Refresh rate:</b> 90 Hz adds +3 General, 120 Hz adds +6, 144 Hz adds +8.
+    </p>
+    <p class="lead">
+      <b style="color:var(--text)">BGMI:</b> Gyro starts at 380 (No Scope) and falls per scope — 360 / 330 / 275 / 210 / 140 / 80.
+      RAM, FPS, finger count and gyro style add or subtract points. Non-Gyro sets gyro to 0 and boosts ADS instead.
+    </p>
+    <p class="lead">
+      <b style="color:var(--text)">What it can't know:</b> screen size, finger speed, grip and practice time. Use the result as a starting point —
+      change one value at a time by ~5 until your crosshair stops overshooting.
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section>
+    <h2>❓ Frequently Asked Questions</h2>
+    <div style="margin-top:18px">
+      <details>
+        <summary>Can using this calculator get my account banned?</summary>
+        <p>No. UltimateSensi Pro only suggests numbers you type into the game's own settings menu. It doesn't modify files, inject scripts or contact game servers. Adjusting your own sensitivity is a normal part of both games.</p>
+      </details>
+      <details>
+        <summary>How do RAM and refresh rate affect sensitivity?</summary>
+        <p>Budget phones drop more frames, so they start higher (General 190–196 on 2–3 GB) and step down for stronger phones (158 on 12 GB+). On 90–144 Hz screens we add 3–8 points because smoother motion makes fast drags easier to control.</p>
+      </details>
+      <details>
+        <summary>What's the best Fire Button size for one-tap headshots?</summary>
+        <p>For most devices, 42%–48% in the lower-right third works well — it leaves room to drag upward. Test a few sizes in Training Mode and keep the most consistent one.</p>
+      </details>
+      <details>
+        <summary>Does this require root or GFX tools?</summary>
+        <p>No. Zero root, zero external config files, zero third-party GFX modifications. You only change settings inside the game menus.</p>
+      </details>
+      <details>
+        <summary>How often should I change my sensitivity?</summary>
+        <p>Stick with one preset for at least 5–7 days in Training Ground and Clash Squad to build muscle memory before making fine adjustments.</p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>UltimateSensi Pro</b> — independent sensitivity calculator. Not affiliated with Garena or KRAFTON.</p>
+    <p style="margin-top:6px">Built for players, by players. © <span id="year"></span></p>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+/* ---------- Data ---------- */
+const FF_TIERS = {
+  2:  {general:196, red:192, x2:188, x4:180, sniper:115, fire:52},
+  3:  {general:190, red:186, x2:182, x4:175, sniper:110, fire:50},
+  4:  {general:182, red:178, x2:174, x4:168, sniper:104, fire:48},
+  6:  {general:174, red:172, x2:168, x4:160, sniper:98,  fire:46},
+  8:  {general:166, red:164, x2:160, x4:154, sniper:92,  fire:44},
+  12: {general:158, red:156, x2:152, x4:146, sniper:88,  fire:42}
+};
+
+const BGMI_GYRO_BASE = {noScope:380, red:360, x2:330, x3:275, x4:210, x6:140, x8:80};
+
+const PRESETS = [
+  {name:"Speed Drag Rusher", game:"Free Fire MAX", tag:"Speed Drag",
+   rows:[["General",195],["Red Dot",190],["Fire Button","42%"],["DPI",480]]},
+  {name:"Brazil One-Tap Drag", game:"Free Fire MAX", tag:"Brazil Drag",
+   rows:[["General",188],["Red Dot",185],["Fire Button","45%"],["DPI",520]]},
+  {name:"Sniper Rusher", game:"Free Fire MAX", tag:"Sniper",
+   rows:[["General",175],["Sniper Scope",125],["Fire Button","50%"],["DPI",450]]},
+  {name:"Full Gyro Fragger", game:"BGMI", tag:"Full Gyro",
+   rows:[["Gyro No Scope",400],["Gyro Red Dot",380],["Gyro 3x",255],["Setup","4-Finger"]]},
+  {name:"Long-Range Spray", game:"BGMI", tag:"M416 Laser",
+   rows:[["Gyro 4x",200],["Gyro 3x",240],["Camera No Scope",118],["Style","Laser"]]},
+  {name:"Balanced Ranked", game:"Free Fire MAX", tag:"Ranked Claw",
+   rows:[["General",178],["Red Dot",175],["Fire Button","48%"],["Setup","2-Finger"]]}
+];
+
+const NICKS = ["亗 SENSI 亗","⚡SENSI⚡","꧁༒☬SENSI☬༒꧂","♛ SENSI ♛","〆SENSI〆",
+  "★SENSI★","ⓥ SENSI 𝟗𝟗𝟗","☠︎ SENSI ☠︎","༺SENSI༻","『TG』SENSI","亗ULTIMATE亗","⚡US PRO⚡"];
+
+/* ---------- Calculator ---------- */
+const $ = id => document.getElementById(id);
+
+function calcFF(ram, hz, style){
+  const t = FF_TIERS[ram];
+  let g=t.general, r=t.red, x2=t.x2, x4=t.x4, sn=t.sniper, f=t.fire;
+
+  if(style==="onetap"){ g+=8; r+=10; }
+  else if(style==="rusher"){ g+=12; sn-=12; }
+  else if(style==="spray"){ g-=4; r-=4; x2-=4; x4-=4; f+=4; }
+  else if(style==="sniper"){ g-=12; sn+=24; }
+
+  if(hz===90) g+=3; else if(hz===120) g+=6; else if(hz===144) g+=8;
+
+  const clamp = v => Math.max(0, Math.min(200, Math.round(v)));
+  return [
+    ["General", clamp(g)],
+    ["Red Dot", clamp(r)],
+    ["2x Scope", clamp(x2)],
+    ["4x Scope", clamp(x4)],
+    ["Sniper Scope", clamp(sn)],
+    ["Fire Look / Free", clamp(g)],
+    ["Fire Button", Math.round(f)+"%"],
+    ["DPI (suggested)", 400 + (ram<=4?80:ram<=6?40:0)]
+  ];
+}
+
+function calcBGMI(ram, hz, fingers, gyroStyle){
+  const bonus = ram<=3 ? 10 : ram<=4 ? 5 : ram>=8 ? -5 : 0;
+  const fpsBonus = hz>=120 ? 18 : hz>=90 ? 8 : 0;
+  const fingerMod = fingers==="2" ? -10 : fingers==="4" ? 5 : 0;
+  const isNonGyro = gyroStyle==="none";
+
+  const g = k => isNonGyro ? 0 : Math.max(0, Math.min(400, Math.round(BGMI_GYRO_BASE[k]+bonus+fpsBonus+fingerMod)));
+  const adsBase = isNonGyro ? 120 : 90;
+  const ads = Math.max(0, Math.min(200, Math.round(adsBase + bonus/2 + fpsBonus/3)));
+
+  return [
+    ["Gyro No Scope", g("noScope")],
+    ["Gyro Red Dot", g("red")],
+    ["Gyro 2x", g("x2")],
+    ["Gyro 3x", g("x3")],
+    ["Gyro 4x", g("x4")],
+    ["Gyro 6x", g("x6")],
+    ["Gyro 8x", g("x8")],
+    ["ADS (Non-Gyro)"+(isNonGyro?" ✔":" opt."), ads]
+  ];
+}
+
+function render(){
+  const game = $("game").value;
+  const ram = parseInt($("ram").value,10);
+  const hz = parseInt($("hz").value,10);
+  const style = $("style").value;
+  const fingers = $("fingers").value;
+  const gyro = $("gyro").value;
+
+  const data = game==="ff"
+    ? calcFF(ram, hz, style)
+    : calcBGMI(ram, hz, fingers, gyro);
+
+  $("profileTag").textContent = game==="ff" ? "FF MAX PROFILE" : "BGMI PROFILE";
+
+  const html = data.map(([k,v]) => `
+    <div class="stat"><span class="k">${k}</span><span class="v">${v}</span></div>
+  `).join("");
+  $("results").innerHTML = `<div class="stat-grid">${html}</div>
+    <p style="color:var(--muted);font-size:12px;margin-top:14px">Tip: change one value at a time by ~5 in Training Mode until your crosshair stops overshooting.</p>`;
+}
+
+/* ---------- Presets ---------- */
+function renderPresets(){
+  $("presetGrid").innerHTML = PRESETS.map(p => `
+    <div class="preset">
+      <span class="game">${p.game} · ${p.tag}</span>
+      <h4>${p.name}</h4>
+      <ul>${p.rows.map(([k,v])=>`<li><span>${k}</span><b>${v}</b></li>`).join("")}</ul>
+    </div>
+  `).join("");
+}
+
+/* ---------- Names ---------- */
+function renderNicks(){
+  $("nickList").innerHTML = NICKS.map(n => `<span class="nick" data-copy="${n}">${n}</span>`).join("");
+}
+
+/* ---------- Copy ---------- */
+const toast = $("toast");
+function showToast(msg="Copied!"){
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"), 1400);
+}
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-copy]");
+  if(!el) return;
+  const raw = el.getAttribute("data-copy");
+  const text = raw.replace(/\\u([0-9A-Fa-f]{4})/g, (_,h)=>String.fromCharCode(parseInt(h,16)));
+  navigator.clipboard.writeText(text).then(
+    ()=>showToast("Copied!"),
+    ()=>showToast("Copy failed — select manually")
+  );
+});
+
+/* ---------- UI events ---------- */
+$("game").addEventListener("change", e=>{
+  const ff = e.target.value==="ff";
+  $("gyroWrap").style.display = ff ? "none" : "block";
+  $("gameTag").textContent = ff ? "FREE FIRE" : "BGMI";
+  $("style").options[0].text = ff ? "Balanced" : "Balanced";
+  $("style").parentElement.style.opacity = ff ? 1 : .55;
+  $("style").disabled = !ff;
+});
+$("calcBtn").addEventListener("click", render);
+
+$("nameInput").addEventListener("input", e=>{
+  $("namePreview").textContent = e.target.value || "Your nickname here";
+});
+
+/* ---------- Init ---------- */
+$("year").textContent = new Date().getFullYear();
+renderPresets();
+renderNicks();
+render();
+</script>
+</body>
+</html>
