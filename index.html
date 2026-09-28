@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>BheroxSensi Pro — BGMI 4.6 Sensitivity Calculator (All Scopes + Guns)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        :root {
+            --bg-primary: #06080b;
+            --bg-card: #0c1017;
+            --bg-elevated: #121821;
+            --bg-input: #0e131a;
+            --border-subtle: #1a232e;
+            --border-strong: #28323f;
+            --text-primary: #f0f4f9;
+            --text-secondary: #a7b6c9;
+            --text-muted: #6b7a8f;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #22d3ee;
+            --accent-gradient: linear-gradient(135deg, #3b82f6, #22d3ee);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --purple: #8b5cf6;
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.55;
+            padding: 0 0 60px;
+            -webkit-font-smoothing: antialiased;
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.12), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(139, 92, 246, 0.06), transparent);
+            background-attachment: fixed;
+        }
+
+        .app {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 20px 16px 50px;
+        }
+
+        .icon {
+            width: 18px; height: 18px;
+            stroke: currentColor; stroke-width: 2;
+            stroke-linecap: round; stroke-linejoin: round;
+            fill: none; flex-shrink: 0;
+            display: inline-block; vertical-align: middle;
+        }
+        .icon-sm { width: 14px; height: 14px; }
+        .icon-lg { width: 24px; height: 24px; }
+        .icon-xl { width: 32px; height: 32px; }
+
+        .badge-row {
+            display: flex; flex-wrap: wrap; gap: 10px;
+            justify-content: center; margin-bottom: 24px;
+        }
+        .badge {
+            background: rgba(18, 24, 33, 0.85);
+            border: 1px solid var(--border-subtle);
+            border-radius: 40px; padding: 7px 16px;
+            font-size: 0.76rem; font-weight: 500;
+            color: var(--text-secondary); letter-spacing: 0.2px;
+            display: inline-flex; align-items: center; gap: 7px;
+            white-space: nowrap; backdrop-filter: blur(8px);
+        }
+        .badge .icon { color: var(--accent-cyan); }
+        .badge.gold { border-color: rgba(245, 158, 11, 0.25); color: #fbbf24; }
+        .badge.gold .icon { color: var(--warning); }
+
+        .hero { text-align: center; margin-bottom: 32px; }
+        .brand-mark {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-weight: 800; font-size: 0.85rem; letter-spacing: 0.5px;
+            color: var(--text-primary); background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle); border-radius: 40px;
+            padding: 6px 16px; margin-bottom: 18px;
+        }
+        .brand-mark .icon { color: var(--accent-cyan); }
+
+        .hero-eyebrow {
+            font-size: 0.7rem; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--text-muted);
+            font-weight: 600; margin-bottom: 14px;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .hero-eyebrow::before, .hero-eyebrow::after {
+            content: ''; width: 24px; height: 1px;
+            background: var(--border-strong);
+        }
+        .hero h1 {
+            font-size: clamp(1.9rem, 5.5vw, 2.7rem);
+            font-weight: 800; line-height: 1.1;
+            letter-spacing: -1.2px;
+            background: linear-gradient(135deg, #ffffff 0%, #a8c5e8 50%, #8b5cf6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 12px;
+        }
+        .hero .sub {
+            color: var(--text-secondary); font-size: 0.92rem;
+            max-width: 620px; margin: 0 auto; line-height: 1.6;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 22px 20px; margin-bottom: 18px;
+            position: relative; overflow: hidden;
+        }
+        .card::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+        }
+        .card-title {
+            font-size: 1.02rem; font-weight: 700;
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 18px; color: var(--text-primary);
+            letter-spacing: -0.2px;
+        }
+        .card-title .icon {
+            color: var(--accent-cyan); background: rgba(34, 211, 238, 0.08);
+            padding: 6px; border-radius: 8px;
+            width: 30px; height: 30px; box-sizing: content-box;
+        }
+        .card-title .tag {
+            margin-left: auto; background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: #fbbf24; font-size: 0.66rem; font-weight: 700;
+            padding: 4px 10px; border-radius: 20px;
+            letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+        .field { display: flex; flex-direction: column; gap: 7px; }
+        .field label {
+            font-size: 0.66rem; text-transform: uppercase;
+            letter-spacing: 0.8px; font-weight: 700;
+            color: var(--text-muted);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .field label .icon-sm { color: var(--accent-blue); }
+
+        select, input[type="text"] {
+            background: var(--bg-input);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            padding: 12px 14px; color: var(--text-primary);
+            font-size: 0.88rem; font-weight: 500;
+            outline: none; width: 100%;
+            transition: all 0.18s ease; appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7a8f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 14px; cursor: pointer;
+        }
+        select:hover, input[type="text"]:hover { border-color: #364253; }
+        select:focus, input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            background-color: #10171f;
+        }
+        select option { background: #121821; color: var(--text-primary); }
+
+        .btn {
+            background: var(--accent-gradient);
+            border: none; border-radius: var(--radius-md);
+            padding: 15px 22px; color: white;
+            font-weight: 700; font-size: 0.92rem;
+            letter-spacing: 0.3px; cursor: pointer;
+            transition: all 0.2s ease; width: 100%;
+            display: flex; align-items: center; justify-content: center;
+            gap: 9px; position: relative; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(59, 130, 246, 0.38); }
+        .btn:active { transform: translateY(0); }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-strong);
+            color: var(--text-secondary);
+            box-shadow: none;
+        }
+        .btn-secondary:hover { background: #1a232e; color: var(--text-primary); box-shadow: none; }
+
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+
+        .output-panel {
+            background: linear-gradient(180deg, #0a0e14, #090c11);
+            border-radius: var(--radius-lg);
+            padding: 20px; border: 1px solid var(--border-subtle);
+            margin-top: 16px;
+        }
+        .output-label {
+            font-size: 0.66rem; text-transform: uppercase;
+            letter-spacing: 1.5px; font-weight: 700;
+            color: var(--text-muted); margin-bottom: 14px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .output-label .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+        .sensi-section-label {
+            font-size: 0.64rem; text-transform: uppercase;
+            letter-spacing: 1.2px; font-weight: 700;
+            color: var(--accent-cyan); margin: 14px 0 6px;
+            display: flex; align-items: center; gap: 6px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed rgba(34, 211, 238, 0.15);
+        }
+        .sensi-section-label:first-of-type { margin-top: 0; }
+        .sensi-section-label.gyro { color: var(--purple); border-bottom-color: rgba(139, 92, 246, 0.15); }
+        .sensi-section-label.gyro .icon-sm { color: var(--purple); }
+
+        .sensi-row {
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 7px 0;
+            border-bottom: 1px solid rgba(26, 35, 46, 0.5);
+            gap: 8px;
+        }
+        .sensi-row:last-child { border-bottom: none; }
+        .sensi-name {
+            font-size: 0.85rem; color: var(--text-secondary);
+            font-weight: 500; display: flex;
+            align-items: center; gap: 8px; flex: 1;
+        }
+        .sensi-name .icon-sm { color: var(--accent-blue); opacity: 0.7; }
+
+        .sensi-value-wrap { display: flex; align-items: center; gap: 6px; }
+
+        .sensi-value {
+            font-size: 0.98rem; font-weight: 800;
+            color: var(--text-primary); background: var(--bg-elevated);
+            padding: 4px 14px; border-radius: 30px;
+            min-width: 56px; text-align: center;
+            letter-spacing: 0.5px; border: 1px solid var(--border-subtle);
+            font-variant-numeric: tabular-nums;
+            transition: all 0.3s ease;
+        }
+        .sensi-value.gyro-hl {
+            background: rgba(139, 92, 246, 0.12);
+            border-color: rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
+        }
+        .sensi-value.zero { color: var(--text-muted); background: rgba(18, 24, 33, 0.6); }
+
+        .copy-icon-btn {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.18);
+            border-radius: 8px; padding: 5px;
+            cursor: pointer; color: #93c5fd;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s ease; width: 28px; height: 28px;
+        }
+        .copy-icon-btn:hover { background: rgba(59, 130, 246, 0.18); border-color: rgba(59, 130, 246, 0.4); }
+        .copy-icon-btn.copied { color: var(--success); border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.1); }
+
+        .small-note {
+            font-size: 0.74rem; color: var(--text-muted);
+            margin-top: 12px; display: flex; align-items: center; gap: 6px;
+        }
+
+        .tip-banner {
+            display: flex; align-items: flex-start; gap: 12px;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.06), rgba(59, 130, 246, 0.04));
+            border: 1px solid rgba(34, 211, 238, 0.15);
+            border-radius: var(--radius-md); padding: 14px 16px;
+        }
+        .tip-banner .icon { color: var(--accent-cyan); flex-shrink: 0; margin-top: 2px; }
+        .tip-banner p { color: var(--text-secondary); font-size: 0.86rem; line-height: 1.55; }
+        .tip-banner strong { color: var(--text-primary); }
+
+        .mod-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+        }
+        .mod-card {
+            background: var(--bg-elevated); border-radius: var(--radius-md);
+            padding: 12px 8px; border: 1px solid var(--border-subtle);
+            text-align: center; transition: all 0.2s ease;
+        }
+        .mod-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+        .mod-card .mod-label {
+            font-size: 0.62rem; color: var(--text-muted); font-weight: 600;
+            letter-spacing: 0.4px; text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center;
+            gap: 4px; margin-bottom: 6px;
+        }
+        .mod-card .mod-label .icon-sm { color: var(--accent-cyan); }
+        .mod-card .mod-value {
+            font-weight: 800; font-size: 1.15rem;
+            color: var(--text-primary); font-variant-numeric: tabular-nums;
+        }
+
+        .gun-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        }
+        .gun-card {
+            background: var(--bg-elevated); border-radius: var(--radius-md);
+            padding: 12px; border: 1px solid var(--border-subtle);
+            transition: all 0.2s ease; cursor: pointer;
+        }
+        .gun-card:hover { border-color: rgba(59, 130, 246, 0.3); background: #151d27; }
+        .gun-card .gun-name {
+            font-weight: 800; font-size: 0.88rem;
+            color: var(--text-primary);
+            display: flex; align-items: center; gap: 6px;
+            margin-bottom: 6px;
+        }
+        .gun-card .gun-name .icon-sm { color: var(--accent-cyan); }
+        .gun-card .gun-stats {
+            font-size: 0.72rem; color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .gun-card .gun-stats span { color: var(--text-muted); }
+        .gun-card .gun-badge {
+            display: inline-block; font-size: 0.6rem; font-weight: 700;
+            padding: 2px 8px; border-radius: 20px; margin-left: auto;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .gun-badge.ar { background: rgba(59,130,246,0.15); color: #93c5fd; }
+        .gun-badge.smg { background: rgba(245,158,11,0.15); color: #fbbf24; }
+        .gun-badge.sniper { background: rgba(139,92,246,0.15); color: #c4b5fd; }
+        .gun-badge.dmr { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+        .gun-badge.lmg { background: rgba(239,68,68,0.15); color: #fca5a5; }
+
+        .method-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 0.74rem; margin: 14px 0;
+            border-radius: var(--radius-sm); overflow: hidden;
+        }
+        .method-table th, .method-table td {
+            padding: 8px 6px; text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .method-table th {
+            color: var(--text-muted); font-weight: 700;
+            text-transform: uppercase; font-size: 0.58rem;
+            letter-spacing: 0.8px; background: rgba(18, 24, 33, 0.5);
+        }
+        .method-table td {
+            color: var(--text-secondary); font-weight: 500;
+            font-variant-numeric: tabular-nums;
+        }
+        .method-table tr:hover td {
+            background: rgba(18, 24, 33, 0.3); color: var(--text-primary);
+        }
+
+        .faq-item { border-bottom: 1px solid var(--border-subtle); }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q {
+            font-weight: 600; font-size: 0.88rem;
+            display: flex; justify-content: space-between;
+            align-items: center; gap: 12px;
+            cursor: pointer; color: var(--text-primary);
+            padding: 13px 0; transition: color 0.15s ease;
+        }
+        .faq-q:hover { color: #93c5fd; }
+        .faq-q .icon {
+            color: var(--text-muted);
+            transition: transform 0.25s ease; flex-shrink: 0;
+        }
+        .faq-q.open .icon { transform: rotate(180deg); color: var(--accent-blue); }
+        .faq-a {
+            font-size: 0.84rem; color: var(--text-secondary);
+            padding: 0 0 14px; line-height: 1.65; display: none;
+        }
+        .faq-a.show { display: block; animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+        .training-block {
+            background: var(--bg-elevated); border-radius: var(--radius-md);
+            padding: 14px; margin-bottom: 8px;
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--accent-blue);
+        }
+        .training-block:last-child { margin-bottom: 0; }
+        .training-block .day {
+            font-weight: 800; font-size: 0.82rem;
+            color: var(--accent-cyan); letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .training-block .title {
+            font-weight: 700; font-size: 0.9rem;
+            color: var(--text-primary);
+            display: flex; align-items: center; gap: 7px;
+            margin-bottom: 5px;
+        }
+        .training-block .title .icon-sm { color: var(--accent-blue); }
+        .training-block .desc {
+            color: var(--text-muted); font-size: 0.78rem; line-height: 1.6;
+        }
+
+        .footer-note {
+            text-align: center; color: var(--text-muted);
+            font-size: 0.7rem; margin-top: 30px;
+            padding: 0 10px; line-height: 1.7;
+        }
+        .footer-note .icon-sm { color: var(--text-muted); vertical-align: -2px; }
+
+        .mt-2 { margin-top: 12px; }
+
+        @media (max-width: 620px) {
+            .grid-2, .mod-grid, .gun-grid { grid-template-columns: 1fr 1fr; }
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+            .hero h1 { font-size: 1.8rem; }
+            .app { padding: 16px 12px 40px; }
+            .card { padding: 18px 16px; }
+        }
+        @media (max-width: 420px) {
+            .grid-2, .gun-grid { grid-template-columns: 1fr; }
+            .grid-3, .mod-grid { grid-template-columns: 1fr 1fr; }
+            .sensi-value { min-width: 48px; padding: 3px 10px; font-size: 0.88rem; }
+            .sensi-name { font-size: 0.78rem; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3a4757; }
+        ::selection { background: rgba(59, 130, 246, 0.3); color: white; }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #131a23; color: var(--text-primary);
+            border: 1px solid var(--border-strong);
+            border-radius: 30px; padding: 10px 22px;
+            font-size: 0.82rem; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            opacity: 0; transition: all 0.3s ease;
+            z-index: 9999; pointer-events: none;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast .icon { color: var(--success); }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <div class="badge-row">
+        <span class="badge gold">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            BGMI 4.6 · 2026 Updated
+        </span>
+        <span class="badge">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            All 7 Scopes
+        </span>
+        <span class="badge">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Safe · In-Game Only
+        </span>
+    </div>
+
+    <div class="hero">
+        <div class="brand-mark">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            BheroxSensi Pro
+        </div>
+        <div class="hero-eyebrow">BGMI 4.6 Calculator · All Scopes + Guns</div>
+        <h1>Complete BGMI 4.6<br>Sensitivity Profile</h1>
+        <p class="sub">Accurate <strong>Camera, ADS &amp; Gyroscope</strong> for all <strong>7 scopes</strong> — with <strong>FPS mode</strong>, <strong>attachment tuning</strong>, <strong>brand-specific</strong> adjustments, and <strong>12+ gun presets</strong>.</p>
+    </div>
+
+    <!-- ============ CALCULATOR ============ -->
+    <div class="card">
+        <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Sensitivity &amp; DPI Calculator
+            <span class="tag">
+                <svg class="icon icon-sm" viewBox="0 0 24 24" style="width:12px;height:12px;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                v4.6
+            </span>
+        </div>
+
+        <div class="grid-2">
+            <div class="field">
+                <label>
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+                    Device Brand
+                </label>
+                <select id="brandSelect">
+                    <option value="Xiaomi">Xiaomi / Redmi / Poco</option>
+                    <option value="Samsung">Samsung</option>
+                    <option value="Realme">Realme</option>
+                    <option value="OnePlus">OnePlus</option>
+                    <option value="Oppo">Oppo</option>
+                    <option value="Vivo">Vivo</option>
+                    <option value="Google">Google Pixel</option>
+                    <option value="Apple">Apple iPhone</option>
+                    <option value="iQOO">iQOO</option>
+                    <option value="Nothing">Nothing Phone</option>
+                    <option value="Asus">Asus ROG</option>
+                    <option value="Motorola">Motorola</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+                    Device RAM
+                </label>
+                <select id="ramSelect">
+                    <option value="2">2 GB</option>
+                    <option value="3">3 GB</option>
+                    <option value="4" selected>4 GB</option>
+                    <option value="6">6 GB</option>
+                    <option value="8">8 GB</option>
+                    <option value="12">12 GB</option>
+                    <option value="16">16 GB+</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid-2 mt-2">
+            <div class="field">
+                <label>
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/></svg>
+                    Playstyle
+                </label>
+                <select id="playstyleSelect">
+                    <option value="Balanced">Balanced</option>
+                    <option value="Aggressive">Aggressive Rusher</option>
+                    <option value="Spray">Laser Spray (M416)</option>
+                    <option value="Sniper">Sniper / DMR</option>
+                    <option value="Gyro">Full Gyro Master</option>
+                    <option value="CloseCombat">Close Combat (SMG/Shotgun)</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Refresh Rate
+                </label>
+                <select id="refreshSelect">
+                    <option value="60">60 Hz (Standard)</option>
+                    <option value="90">90 Hz</option>
+                    <option value="120" selected>120 Hz</option>
+                    <option value="144">144 Hz</option>
+                    <option value="165">165 Hz</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid-2 mt-2">
+            <div class="field">
+                <label>
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+                    Finger Setup
+                </label>
+                <select id="fingerSelect">
+                    <option value="2">2 Finger (Thumbs)</option>
+                    <option value="3">3 Finger</option>
+                    <option value="4" selected>4 Finger Claw</option>
+                    <option value="5">5 Finger Claw</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 16a6 6 0 1 1 6-6 6 6 0 0 1-6 6z"/><circle cx="12" cy="12" r="2"/></svg>
+                    Gyroscope Mode
+                </label>
+                <select id="gyroSelect">
+                    <option value="on" selected>Gyro On (Recommended)</option>
+                    <option value="off">Non-Gyro (Finger Only)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid-2 mt-2">
+            <div class="field">
+                <label>
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>
+                    FPS / Graphics Mode
+                </label>
+                <select id="fpsSelect">
+                    <option value="Extreme">Extreme (60 FPS)</option>
+                    <option value="Smooth" selected>Smooth (90 FPS)</option>
+                    <option value="Balanced">Balanced (60 FPS)</option>
+                    <option value="HD">HD (60 FPS)</option>
+                    <option value="HDR">HDR (60 FPS)</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Attachments (Recoil)
+                </label>
+                <select id="attachSelect">
+                    <option value="none">None (Bare)</option>
+                    <option value="comp">Compensator Only</option>
+                    <option value="grip">Grip Only</option>
+                    <option value="both" selected>Compensator + Grip</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <button class="btn" id="calcBtn">
+                <svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Generate BGMI 4.6 Sensitivity
+            </button>
+        </div>
+
+        <!-- ============ OUTPUT ============ -->
+        <div class="output-panel">
+            <div class="output-label">
+                <span class="dot"></span>
+                <span id="outputMode">Calibrated Gyro Profile · BGMI 4.6</span>
+            </div>
+
+            <div id="outputSensi">
+                <div class="sensi-section-label">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    Camera Sensitivity (All Scopes)
+                </div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>No Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outCamNoScope">0</span><button class="copy-icon-btn" data-copy-id="outCamNoScope" title="Copy"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Red Dot</span><div class="sensi-value-wrap"><span class="sensi-value" id="outCamRedDot">0</span><button class="copy-icon-btn" data-copy-id="outCamRedDot"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="8"/></svg>2x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outCam2x">0</span><button class="copy-icon-btn" data-copy-id="outCam2x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>3x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outCam3x">0</span><button class="copy-icon-btn" data-copy-id="outCam3x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg>4x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outCam4x">0</span><button class="copy-icon-btn" data-copy-id="outCam4x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="2"/></svg>6x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outCam6x">0</span><button class="copy-icon-btn" data-copy-id="outCam6x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="2"/></svg>8x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outCam8x">0</span><button class="copy-icon-btn" data-copy-id="outCam8x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+
+                <div class="sensi-section-label" style="margin-top:18px;">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    ADS Sensitivity (All Scopes)
+                </div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>No Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outAdsNoScope">0</span><button class="copy-icon-btn" data-copy-id="outAdsNoScope"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="3"/></svg>Red Dot</span><div class="sensi-value-wrap"><span class="sensi-value" id="outAdsRedDot">0</span><button class="copy-icon-btn" data-copy-id="outAdsRedDot"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="5"/></svg>2x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outAds2x">0</span><button class="copy-icon-btn" data-copy-id="outAds2x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="6"/></svg>3x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outAds3x">0</span><button class="copy-icon-btn" data-copy-id="outAds3x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="8"/></svg>4x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outAds4x">0</span><button class="copy-icon-btn" data-copy-id="outAds4x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="9"/></svg>6x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outAds6x">0</span><button class="copy-icon-btn" data-copy-id="outAds6x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="10"/></svg>8x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outAds8x">0</span><button class="copy-icon-btn" data-copy-id="outAds8x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+
+                <div id="gyroRows">
+                    <div class="sensi-section-label gyro" style="margin-top:18px;">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+                        Gyroscope Sensitivity (All Scopes)
+                    </div>
+                    <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>No Scope</span><div class="sensi-value-wrap"><span class="sensi-value gyro-hl" id="outGyroNoScope">0</span><button class="copy-icon-btn" data-copy-id="outGyroNoScope"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                    <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5"/></svg>Red Dot</span><div class="sensi-value-wrap"><span class="sensi-value" id="outGyroRedDot">0</span><button class="copy-icon-btn" data-copy-id="outGyroRedDot"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                    <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg>2x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outGyro2x">0</span><button class="copy-icon-btn" data-copy-id="outGyro2x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                    <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="7"/></svg>3x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outGyro3x">0</span><button class="copy-icon-btn" data-copy-id="outGyro3x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                    <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></svg>4x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outGyro4x">0</span><button class="copy-icon-btn" data-copy-id="outGyro4x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                    <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="5"/></svg>6x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outGyro6x">0</span><button class="copy-icon-btn" data-copy-id="outGyro6x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                    <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="6"/></svg>8x Scope</span><div class="sensi-value-wrap"><span class="sensi-value" id="outGyro8x">0</span><button class="copy-icon-btn" data-copy-id="outGyro8x"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+                </div>
+
+                <div class="sensi-section-label" style="margin-top:18px;">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    Device Settings
+                </div>
+                <div class="sensi-row"><span class="sensi-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg>Recommended DPI</span><div class="sensi-value-wrap"><span class="sensi-value" id="outDPI">—</span><button class="copy-icon-btn" data-copy-id="outDPI"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div></div>
+            </div>
+
+            <div class="small-note" id="outNote">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                Recommended for your device profile
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-secondary" id="copyAllBtn">
+                    <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy All
+                </button>
+                <button class="btn btn-secondary" id="shareBtn">
+                    <svg class="icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    Share
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TIP ============ -->
+    <div class="card">
+        <div class="tip-banner">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="4"/></svg>
+            <p>
+                <strong>BGMI 4.6 Spray Tip:</strong>
+                Keep <strong>Gyro No Scope &amp; Red Dot</strong> high for close flicks. Lower <strong>Gyro 3x / 4x / 6x</strong> progressively for stable mid-to-long sprays. Compensator + Vertical Grip ke saath <strong>gyro thoda kam</strong> chahiye — calculator ye already adjust karta hai.
+            </p>
+        </div>
+    </div>
+
+    <!-- ============ GUN PRESETS ============ -->
+    <div class="card">
+        <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/></svg>
+            Gun-Specific Gyro Recommendations
+        </div>
+        <div class="gun-grid" id="gunGrid">
+            <div class="gun-card" data-gun="m416"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>M416 <span class="gun-badge ar">AR</span></div><div class="gun-stats"><span>Gyro 3x:</span> <strong id="gunM416_3x">—</strong> · <span>4x:</span> <strong id="gunM416_4x">—</strong></div></div>
+            <div class="gun-card" data-gun="akm"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>AKM <span class="gun-badge ar">AR</span></div><div class="gun-stats"><span>Gyro 3x:</span> <strong id="gunAKM_3x">—</strong> · <span>4x:</span> <strong id="gunAKM_4x">—</strong></div></div>
+            <div class="gun-card" data-gun="beryl"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Beryl M762 <span class="gun-badge ar">AR</span></div><div class="gun-stats"><span>Gyro 3x:</span> <strong id="gunBeryl_3x">—</strong> · <span>4x:</span> <strong id="gunBeryl_4x">—</strong></div></div>
+            <div class="gun-card" data-gun="aug"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>AUG <span class="gun-badge ar">AR</span></div><div class="gun-stats"><span>Gyro 3x:</span> <strong id="gunAUG_3x">—</strong> · <span>4x:</span> <strong id="gunAUG_4x">—</strong></div></div>
+            <div class="gun-card" data-gun="groza"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Groza <span class="gun-badge ar">AR</span></div><div class="gun-stats"><span>Gyro 3x:</span> <strong id="gunGroza_3x">—</strong> · <span>4x:</span> <strong id="gunGroza_4x">—</strong></div></div>
+            <div class="gun-card" data-gun="ump45"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>UMP45 <span class="gun-badge smg">SMG</span></div><div class="gun-stats"><span>Gyro No Scope:</span> <strong id="gunUMP_NS">—</strong> · <span>3x:</span> <strong id="gunUMP_3x">—</strong></div></div>
+            <div class="gun-card" data-gun="vector"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Vector <span class="gun-badge smg">SMG</span></div><div class="gun-stats"><span>Gyro No Scope:</span> <strong id="gunVector_NS">—</strong> · <span>3x:</span> <strong id="gunVector_3x">—</strong></div></div>
+            <div class="gun-card" data-gun="ump9"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>MP5K <span class="gun-badge smg">SMG</span></div><div class="gun-stats"><span>Gyro No Scope:</span> <strong id="gunMP5K_NS">—</strong> · <span>3x:</span> <strong id="gunMP5K_3x">—</strong></div></div>
+            <div class="gun-card" data-gun="awm"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>AWM <span class="gun-badge sniper">Sniper</span></div><div class="gun-stats"><span>Gyro 6x:</span> <strong id="gunAWM_6x">—</strong> · <span>8x:</span> <strong id="gunAWM_8x">—</strong></div></div>
+            <div class="gun-card" data-gun="m24"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>M24 <span class="gun-badge sniper">Sniper</span></div><div class="gun-stats"><span>Gyro 6x:</span> <strong id="gunM24_6x">—</strong> · <span>8x:</span> <strong id="gunM24_8x">—</strong></div></div>
+            <div class="gun-card" data-gun="mini14"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="4"/></svg>Mini14 <span class="gun-badge dmr">DMR</span></div><div class="gun-stats"><span>Gyro 4x:</span> <strong id="gunMini_4x">—</strong> · <span>6x:</span> <strong id="gunMini_6x">—</strong></div></div>
+            <div class="gun-card" data-gun="slr"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="4"/></svg>SLR <span class="gun-badge dmr">DMR</span></div><div class="gun-stats"><span>Gyro 4x:</span> <strong id="gunSLR_4x">—</strong> · <span>6x:</span> <strong id="gunSLR_6x">—</strong></div></div>
+            <div class="gun-card" data-gun="dp28"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>DP28 <span class="gun-badge lmg">LMG</span></div><div class="gun-stats"><span>Gyro 3x:</span> <strong id="gunDP28_3x">—</strong> · <span>4x:</span> <strong id="gunDP28_4x">—</strong></div></div>
+            <div class="gun-card" data-gun="m249"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>M249 <span class="gun-badge lmg">LMG</span></div><div class="gun-stats"><span>Gyro 3x:</span> <strong id="gunM249_3x">—</strong> · <span>4x:</span> <strong id="gunM249_4x">—</strong></div></div>
+        </div>
+        <div class="small-note">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            Ye values tumhari current sensi + gun recoil ke hisaab se calculated hain. ±5 adjust karo Training Grounds me.
+        </div>
+    </div>
+
+    <!-- ============ PRESETS ============ -->
+    <div class="card">
+        <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            One-Tap Playstyle Presets
+        </div>
+        <div class="grid-2">
+            <div class="gun-card" data-preset="gyroFragger"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Full Gyro Fragger</div><div class="gun-stats"><span>Gyro NS:</span> 400 · <span>Red Dot:</span> 380 · <span>3x:</span> 255<br><span>Setup:</span> 5-Finger · Gyro On</div></div>
+            <div class="gun-card" data-preset="longRange"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Long-Range Spray</div><div class="gun-stats"><span>Gyro 4x:</span> 200 · <span>3x:</span> 240 · <span>Cam NS:</span> 118<br><span>Setup:</span> 4-Finger · Gyro On</div></div>
+            <div class="gun-card" data-preset="closeCombat"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>Close Combat Rusher</div><div class="gun-stats"><span>Cam NS:</span> 145 · <span>ADS NS:</span> 135 · <span>Gyro NS:</span> 400<br><span>Setup:</span> 4-Finger · Gyro On</div></div>
+            <div class="gun-card" data-preset="sniperMain"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>AWM / DMR Sniper</div><div class="gun-stats"><span>Cam 6x:</span> 85 · <span>Cam 8x:</span> 78 · <span>Gyro 6x:</span> 140<br><span>Setup:</span> 4-Finger · Non-Gyro</div></div>
+            <div class="gun-card" data-preset="balanced"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>Balanced Ranked</div><div class="gun-stats"><span>Cam NS:</span> 118 · <span>Red Dot:</span> 112 · <span>Gyro NS:</span> 380<br><span>Setup:</span> 4-Finger · Gyro On</div></div>
+            <div class="gun-card" data-preset="nonGyro"><div class="gun-name"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/></svg>Pure Finger Player</div><div class="gun-stats"><span>Cam NS:</span> 145 · <span>ADS NS:</span> 138 · <span>Cam 6x:</span> 100<br><span>Setup:</span> 4-Finger · Non-Gyro</div></div>
+        </div>
+    </div>
+
+    <!-- ============ METHODOLOGY ============ -->
+    <div class="card">
+        <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0H5a2 2 0 0 1-2-2v-4m6 6h10a2 2 0 0 0 2-2v-4"/><circle cx="12" cy="12" r="2"/></svg>
+            BGMI 4.6 Base Values & Rules
+        </div>
+
+        <h3 style="font-size:0.92rem; margin:14px 0 8px; color:var(--text-primary);">Gyroscope Base (All Scopes)</h3>
+        <table class="method-table">
+            <thead><tr><th>Scope</th><th>Gyro Base</th><th>Purpose</th></tr></thead>
+            <tbody>
+                <tr><td>No Scope</td><td>380</td><td>Close-range flick</td></tr>
+                <tr><td>Red Dot</td><td>360</td><td>Hip-fire control</td></tr>
+                <tr><td>2x</td><td>330</td><td>Mid-range stability</td></tr>
+                <tr><td>3x</td><td>275</td><td>Spray control</td></tr>
+                <tr><td>4x</td><td>210</td><td>DMR tap fire</td></tr>
+                <tr><td>6x</td><td>140</td><td>Long-range precision</td></tr>
+                <tr><td>8x</td><td>80</td><td>Sniper fine aim</td></tr>
+            </tbody>
+        </table>
+
+        <h3 style="font-size:0.92rem; margin:18px 0 8px; color:var(--text-primary);">Camera &amp; ADS Base</h3>
+        <table class="method-table">
+            <thead><tr><th>Scope</th><th>Camera</th><th>ADS</th></tr></thead>
+            <tbody>
+                <tr><td>No Scope</td><td>118</td><td>110</td></tr>
+                <tr><td>Red Dot</td><td>112</td><td>105</td></tr>
+                <tr><td>2x</td><td>105</td><td>98</td></tr>
+                <tr><td>3x</td><td>98</td><td>92</td></tr>
+                <tr><td>4x</td><td>92</td><td>86</td></tr>
+                <tr><td>6x</td><td>85</td><td>80</td></tr>
+                <tr><td>8x</td><td>78</td><td>72</td></tr>
+            </tbody>
+        </table>
+
+        <h3 style="font-size:0.92rem; margin:18px 0 8px; color:var(--text-primary);">Adjustment Rules</h3>
+        <ul style="font-size:0.82rem; color:var(--text-muted); padding-left:18px; list-style-type:disc; line-height:1.75;">
+            <li><strong style="color:var(--text-secondary);">Brand:</strong> Xiaomi +3, Samsung +1, iPhone −5, OnePlus −2, Asus −3, Realme +2, Poco +3 (touch response different)</li>
+            <li><strong style="color:var(--text-secondary);">RAM:</strong> 2GB +15, 4GB +8, 8GB −5, 16GB −15</li>
+            <li><strong style="color:var(--text-secondary);">Refresh:</strong> 90Hz +4, 120Hz +8, 144Hz +12, 165Hz +16</li>
+            <li><strong style="color:var(--text-secondary);">FPS Mode:</strong> Extreme +6, Smooth +10, Balanced +4, HD +2, HDR 0 (gyro pe)</li>
+            <li><strong style="color:var(--text-secondary);">Fingers:</strong> 3F −6, 4F −10, 5F −14 (camera/ADS only)</li>
+            <li><strong style="color:var(--text-secondary);">Attachments:</strong> Comp −8, Grip −6, Both −14 (gyro)</li>
+            <li><strong style="color:var(--text-secondary);">Playstyle:</strong> Aggressive +12 Cam, Spray +8 ADS, Sniper −10 Cam +20 4x/6x, Gyro +20 all gyro</li>
+            <li><strong style="color:var(--text-secondary);">Non-Gyro:</strong> Gyro = 0, ADS +25% compensate</li>
+        </ul>
+    </div>
+
+    <!-- ============ TRAINING ============ -->
+    <div class="card">
+        <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            7-Day BGMI 4.6 Aim Training
+        </div>
+        <div class="training-block"><div class="day">Day 1 - Day 2</div><div class="title"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Crosshair Placement &amp; Static Bots</div><div class="desc">20 mins Training Grounds. Neck/head level crosshair lock. Single-tap with M416 &amp; AKM without moving.</div></div>
+        <div class="training-block"><div class="day">Day 3 - Day 4</div><div class="title"><svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Gyro Spray Control</div><div class="desc">M416 + Compensator + Vertical Grip. 30 bullets @ 50m. Gyro 3x/4x ±5 until recoil flat.</div></div>
+        <div class="training-block" style="border-left-color: var(--purple);"><div class="day" style="color:var(--purple);">Day 5 - Day 6</div><div class="title"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg>Sniper &amp; DMR Practice</div><div class="desc">AWM/M24/Mini14 @ 100m+. 6x &amp; 8x scope aim. Gyro 6x/8x ±3 until instant lock.</div></div>
+        <div class="training-block" style="border-left-color: var(--success);"><div class="day" style="color:var(--success);">Day 7</div><div class="title"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>1v1 TDM &amp; Lock Final</div><div class="desc">Peek → Aim → Spray → Cover in 0.5s. Lock sensitivity permanently after Day 7.</div></div>
+    </div>
+
+    <!-- ============ FAQ ============ -->
+    <div class="card">
+        <div class="card-title">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            FAQ — BGMI 4.6
+        </div>
+        <div class="faq-item"><div class="faq-q">Is BheroxSensi Pro safe? <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">100% safe. Sirf numbers suggest karta hai jo tum BGMI ke andar khud type karte ho. Koi file modify nahi, koi script inject nahi, koi server communication nahi.</div></div>
+        <div class="faq-item"><div class="faq-q">Brand se values change hoti hain? <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Haan. Alag brands ka touch response alag hota hai. Xiaomi +3, iPhone −5, Asus −3 — ye adjustments automatically apply hote hain.</div></div>
+        <div class="faq-item"><div class="faq-q">FPS mode ka asar kya hai? <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Smooth (90 FPS) sabse smooth feel deta hai, isliye gyro +10. Extreme (60 FPS) me +6. HDR me recoil feel zyada hota hai isliye adjustment 0.</div></div>
+        <div class="faq-item"><div class="faq-q">Attachment toggle kya karta hai? <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Compensator + Vertical Grip lagane se recoil kam hota hai, isliye gyro bhi kam chahiye. Comp −8, Grip −6, Both −14 gyro se minus hota hai.</div></div>
+        <div class="faq-item"><div class="faq-q">6x aur 8x ka slider BGMI me kahan hai? <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">BGMI > Settings > Sensitivity me 6x aur 8x ke alag sliders hain — kam se kam 4.6 update me. Agar tumhare version me nahi dikh rahe, to 4x slider me hi 6x/8x values use karo.</div></div>
+        <div class="faq-item"><div class="faq-q">Copy All button kya karta hai? <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Saari generated sensitivity values ek saath clipboard me copy kar deta hai. Phir tum use kisi notes app ya WhatsApp me paste kar sakte ho.</div></div>
+        <div class="faq-item"><div class="faq-q">Share button kaise kaam karta hai? <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Agar tumhara browser Web Share API support karta hai (mobile pe common), to native share sheet khulega. Warna copy ho jayega.</div></div>
+        <div class="faq-item"><div class="faq-q">Sensitivity kitne din me lock karun? <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">Minimum 5-7 din same sensitivity pe khelo Training Grounds + TDM me. Muscle memory banegi tab hi improvement dikhega.</div></div>
+    </div>
+
+    <div class="footer-note">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        BheroxSensi Pro — BGMI 4.6 Sensitivity Calculator · Independent Tool · Not affiliated with KRAFTON
+    </div>
+
+</div>
+
+<div class="toast" id="toast">
+    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+    <span id="toastText">Copied!</span>
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ===== DOM =====
+        const brandSelect = document.getElementById('brandSelect');
+        const ramSelect = document.getElementById('ramSelect');
+        const playstyleSelect = document.getElementById('playstyleSelect');
+        const refreshSelect = document.getElementById('refreshSelect');
+        const fingerSelect = document.getElementById('fingerSelect');
+        const gyroSelect = document.getElementById('gyroSelect');
+        const fpsSelect = document.getElementById('fpsSelect');
+        const attachSelect = document.getElementById('attachSelect');
+
+        // Camera
+        const camIds = ['NoScope','RedDot','2x','3x','4x','6x','8x'];
+        const camEls = {};
+        camIds.forEach(id => camEls[id] = document.getElementById('outCam'+id));
+        // ADS
+        const adsEls = {};
+        camIds.forEach(id => adsEls[id] = document.getElementById('outAds'+id));
+        // Gyro
+        const gyroEls = {};
+        camIds.forEach(id => gyroEls[id] = document.getElementById('outGyro'+id));
+
+        const outDPI = document.getElementById('outDPI');
+        const outNote = document.getElementById('outNote');
+        const outputMode = document.getElementById('outputMode');
+
+        // ===== BASE DATA =====
+        const gyroBase = { NoScope:380, RedDot:360, '2x':330, '3x':275, '4x':210, '6x':140, '8x':80 };
+        const camBase  = { NoScope:118, RedDot:112, '2x':105, '3x':98,  '4x':92,  '6x':85,  '8x':78 };
+        const adsBase  = { NoScope:110, RedDot:105, '2x':98,  '3x':92,  '4x':86,  '6x':80,  '8x':72 };
+
+        const ramMod = { '2':15, '3':12, '4':8, '6':2, '8':-5, '12':-12, '16':-15 };
+        const dpiMap = { '2':520, '3':500, '4':480, '6':450, '8':420, '12':400, '16':380 };
+
+        const brandMod = {
+            'Xiaomi': 3, 'Samsung': 1, 'Realme': 2, 'OnePlus': -2,
+            'Oppo': 0, 'Vivo': 0, 'Google': -3, 'Apple': -5,
+            'iQOO': -1, 'Nothing': -2, 'Asus': -3, 'Motorola': 0
+        };
+
+        const fpsMod = {
+            'Extreme': 6, 'Smooth': 10, 'Balanced': 4, 'HD': 2, 'HDR': 0
+        };
+
+        const attachMod = { 'none': 0, 'comp': -8, 'grip': -6, 'both': -14 };
+
+        // ===== CALCULATE =====
+        function calculate() {
+            const brand = brandSelect.value || 'Xiaomi';
+            const ram = ramSelect.value;
+            const playstyle = playstyleSelect.value;
+            const refresh = parseInt(refreshSelect.value, 10) || 60;
+            const fingers = fingerSelect.value;
+            const gyro = gyroSelect.value;
+            const fps = fpsSelect.value;
+            const attach = attachSelect.value;
+
+            // Refresh bonus
+            let refreshBonus = 0;
+            if (refresh === 90) refreshBonus = 4;
+            else if (refresh === 120) refreshBonus = 8;
+            else if (refresh === 144) refreshBonus = 12;
+            else if (refresh === 165) refreshBonus = 16;
+
+            const rm = ramMod[ram] || 0;
+            const bm = brandMod[brand] || 0;
+            const fm = fpsMod[fps] || 0;
+            const am = attachMod[attach] || 0;
+
+            // Finger modifier (camera/ADS only)
+            let fingerMod = 0;
+            if (fingers === '3') fingerMod = -6;
+            else if (fingers === '4') fingerMod = -10;
+            else if (fingers === '5') fingerMod = -14;
+
+            // Playstyle modifiers
+            let camPlayMod = 0, adsPlayMod = 0, gyroPlayMod = 0, sniperMod = 0;
+            switch (playstyle) {
+                case 'Aggressive': camPlayMod = 12; adsPlayMod = 8; gyroPlayMod = 8; break;
+                case 'Spray': camPlayMod = -6; adsPlayMod = 8; gyroPlayMod = 4; break;
+                case 'Sniper': camPlayMod = -10; adsPlayMod = -4; gyroPlayMod = -8; sniperMod = 20; break;
+                case 'Gyro': camPlayMod = 4; adsPlayMod = 4; gyroPlayMod = 20; break;
+                case 'CloseCombat': camPlayMod = 10; adsPlayMod = 6; gyroPlayMod = 10; break;
+            }
+
+            const clampCam = v => Math.round(Math.max(40, Math.min(200, v)));
+            const clampGyro = v => Math.round(Math.max(0, Math.min(400, v)));
+
+            // Common modifiers
+            const commonCam = rm + bm + refreshBonus + fm + fingerMod + camPlayMod;
+            const commonAds = rm + bm + refreshBonus + fm + adsPlayMod;
+            const commonGyro = rm + bm + refreshBonus + fm + gyroPlayMod + am;
+
+            // Camera
+            const camValues = {};
+            camIds.forEach(id => {
+                camValues[id] = clampCam(camBase[id] + commonCam);
+            });
+
+            // ADS
+            let adsValues = {};
+            camIds.forEach(id => {
+                adsValues[id] = adsBase[id] + commonAds;
+            });
+
+            // Gyro
+            let gyroValues = {};
+            camIds.forEach(id => {
+                if (gyro === 'on') {
+                    let v = gyroBase[id] + commonGyro;
+                    if (playstyle === 'Sniper' && (id === '6x' || id === '8x')) {
+                        v += sniperMod;
+                    }
+                    gyroValues[id] = clampGyro(v);
+                } else {
+                    gyroValues[id] = 0;
+                }
+            });
+
+            // Non-gyro: boost ADS
+            if (gyro === 'off') {
+                camIds.forEach(id => {
+                    adsValues[id] = Math.round(adsValues[id] * 1.25);
+                });
+            }
+            camIds.forEach(id => {
+                adsValues[id] = clampCam(adsValues[id]);
+            });
+
+            const dpi = dpiMap[ram] || 480;
+
+            // ===== UPDATE DOM =====
+            camIds.forEach(id => { camEls[id].textContent = camValues[id]; });
+            camIds.forEach(id => { adsEls[id].textContent = adsValues[id]; });
+            camIds.forEach(id => {
+                const el = gyroEls[id];
+                if (el) el.textContent = gyroValues[id];
+            });
+            outDPI.textContent = dpi;
+
+            // Mode
+            if (gyro === 'on') {
+                outputMode.textContent = 'Calibrated Gyro Profile · BGMI 4.6';
+                camIds.forEach(id => {
+                    const el = gyroEls[id];
+                    if (el) { el.classList.remove('zero'); if (id === 'NoScope') el.classList.add('gyro-hl'); }
+                });
+            } else {
+                outputMode.textContent = 'Calibrated Non-Gyro Profile · BGMI 4.6';
+                camIds.forEach(id => {
+                    const el = gyroEls[id];
+                    if (el) { el.classList.remove('gyro-hl'); el.classList.add('zero'); }
+                });
+            }
+
+            // Gun presets
+            updateGunValues(gyroValues, camValues, adsValues);
+
+            // Note
+            const fingerLabel = fingers === '5' ? '5-Finger Claw' : fingers + '-Finger';
+            outNote.innerHTML = `
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                BGMI 4.6 · ${brand} · ${ram}GB · ${refresh}Hz · ${fps} FPS · ${playstyle} · ${fingerLabel} · ${attach === 'both' ? 'Comp+Grip' : attach === 'comp' ? 'Compensator' : attach === 'grip' ? 'Grip' : 'No Attach'} · ${gyro === 'on' ? 'Gyro On' : 'Non-Gyro'}
+            `;
+
+            // Store for copy-all
+            window.__lastValues = {
+                brand, ram, refresh, fps, playstyle, fingers, attach, gyro,
+                cam: camValues, ads: adsValues, gyro: gyroValues, dpi
+            };
+        }
+
+        // ===== GUN VALUES =====
+        function updateGunValues(gyroV, camV, adsV) {
+            // AR: 3x and 4x gyro
+            const ar3x = gyroV['3x'];
+            const ar4x = gyroV['4x'];
+            document.getElementById('gunM416_3x').textContent = clampG(ar3x + 5);
+            document.getElementById('gunM416_4x').textContent = clampG(ar4x + 5);
+            document.getElementById('gunAKM_3x').textContent = clampG(ar3x - 5);
+            document.getElementById('gunAKM_4x').textContent = clampG(ar4x - 5);
+            document.getElementById('gunBeryl_3x').textContent = clampG(ar3x - 8);
+            document.getElementById('gunBeryl_4x').textContent = clampG(ar4x - 8);
+            document.getElementById('gunAUG_3x').textContent = clampG(ar3x + 3);
+            document.getElementById('gunAUG_4x').textContent = clampG(ar4x + 3);
+            document.getElementById('gunGroza_3x').textContent = clampG(ar3x + 8);
+            document.getElementById('gunGroza_4x').textContent = clampG(ar4x + 8);
+
+            // SMG
+            document.getElementById('gunUMP_NS').textContent = clampG(gyroV['NoScope'] - 5);
+            document.getElementById('gunUMP_3x').textContent = clampG(gyroV['3x'] + 5);
+            document.getElementById('gunVector_NS').textContent = clampG(gyroV['NoScope'] - 10);
+            document.getElementById('gunVector_3x').textContent = clampG(gyroV['3x']);
+            document.getElementById('gunMP5K_NS').textContent = clampG(gyroV['NoScope'] - 5);
+            document.getElementById('gunMP5K_3x').textContent = clampG(gyroV['3x'] + 3);
+
+            // Sniper
+            document.getElementById('gunAWM_6x').textContent = clampG(gyroV['6x'] - 10);
+            document.getElementById('gunAWM_8x').textContent = clampG(gyroV['8x'] - 5);
+            document.getElementById('gunM24_6x').textContent = clampG(gyroV['6x'] - 5);
+            document.getElementById('gunM24_8x').textContent = clampG(gyroV['8x']);
+
+            // DMR
+            document.getElementById('gunMini_4x').textContent = clampG(gyroV['4x'] + 5);
+            document.getElementById('gunMini_6x').textContent = clampG(gyroV['6x'] + 5);
+            document.getElementById('gunSLR_4x').textContent = clampG(gyroV['4x'] - 5);
+            document.getElementById('gunSLR_6x').textContent = clampG(gyroV['6x']);
+
+            // LMG
+            document.getElementById('gunDP28_3x').textContent = clampG(gyroV['3x'] + 10);
+            document.getElementById('gunDP28_4x').textContent = clampG(gyroV['4x'] + 10);
+            document.getElementById('gunM249_3x').textContent = clampG(gyroV['3x'] + 15);
+            document.getElementById('gunM249_4x').textContent = clampG(gyroV['4x'] + 15);
+        }
+        function clampG(v) { return Math.round(Math.max(0, Math.min(400, v))); }
+
+        // ===== TOAST =====
+        const toast = document.getElementById('toast');
+        const toastText = document.getElementById('toastText');
+        function showToast(msg) {
+            toastText.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(window.__toastTimer);
+            window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // ===== COPY INDIVIDUAL =====
+        document.querySelectorAll('.copy-icon-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const id = this.getAttribute('data-copy-id');
+                const el = document.getElementById(id);
+                if (!el) return;
+                const text = el.textContent.trim();
+                navigator.clipboard.writeText(text).then(() => {
+                    this.classList.add('copied');
+                    this.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>';
+                    showToast('Copied: ' + text);
+                    setTimeout(() => {
+                        this.classList.remove('copied');
+                        this.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+                    }, 1500);
+                }).catch(() => showToast('Copy failed'));
+            });
+        });
+
+        // ===== COPY ALL =====
+        document.getElementById('copyAllBtn').addEventListener('click', function() {
+            const v = window.__lastValues;
+            if (!v) return;
+            let text = `=== BheroxSensi Pro — BGMI 4.6 ===\n`;
+            text += `Device: ${v.brand} · ${v.ram}GB · ${v.refresh}Hz · ${v.fps}\n`;
+            text += `Playstyle: ${v.playstyle} · ${v.fingers}-Finger · ${v.gyro === 'on' ? 'Gyro On' : 'Non-Gyro'}\n`;
+            text += `Attachments: ${v.attach}\n\n`;
+            text += `--- CAMERA ---\n`;
+            camIds.forEach(id => { text += `${id}: ${v.cam[id]}\n`; });
+            text += `\n--- ADS ---\n`;
+            camIds.forEach(id => { text += `${id}: ${v.ads[id]}\n`; });
+            if (v.gyro === 'on') {
+                text += `\n--- GYRO ---\n`;
+                camIds.forEach(id => { text += `${id}: ${v.gyro[id]}\n`; });
+            }
+            text += `\nDPI: ${v.dpi}\n`;
+            text += `\nGenerated by BheroxSensi Pro`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('All values copied!');
+            }).catch(() => showToast('Copy failed'));
+        });
+
+        // ===== SHARE =====
+        document.getElementById('shareBtn').addEventListener('click', function() {
+            const v = window.__lastValues;
+            if (!v) return;
+            let text = `BheroxSensi Pro — BGMI 4.6\n${v.brand} ${v.ram}GB ${v.refresh}Hz\n`;
+            text += `Cam NS:${v.cam.NoScope} RD:${v.cam.RedDot} 3x:${v.cam['3x']} 4x:${v.cam['4x']} 6x:${v.cam['6x']}\n`;
+            if (v.gyro === 'on') text += `Gyro NS:${v.gyro.NoScope} 3x:${v.gyro['3x']} 4x:${v.gyro['4x']} 6x:${v.gyro['6x']}\n`;
+            text += `DPI:${v.dpi}`;
+
+            if (navigator.share) {
+                navigator.share({ title: 'BheroxSensi Pro — BGMI 4.6', text: text }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(text).then(() => showToast('Copied for sharing!'));
+            }
+        });
+
+        // ===== PRESET CARDS =====
+        document.querySelectorAll('[data-preset]').forEach(card => {
+            card.addEventListener('click', function() {
+                const p = this.getAttribute('data-preset');
+                if (p === 'gyroFragger') { ramSelect.value = '6'; playstyleSelect.value = 'Gyro'; refreshSelect.value = '120'; gyroSelect.value = 'on'; fingerSelect.value = '5'; }
+                else if (p === 'longRange') { ramSelect.value = '6'; playstyleSelect.value = 'Spray'; refreshSelect.value = '120'; gyroSelect.value = 'on'; fingerSelect.value = '4'; }
+                else if (p === 'closeCombat') { ramSelect.value = '4'; playstyleSelect.value = 'CloseCombat'; refreshSelect.value = '90'; gyroSelect.value = 'on'; fingerSelect.value = '4'; }
+                else if (p === 'sniperMain') { ramSelect.value = '4'; playstyleSelect.value = 'Sniper'; refreshSelect.value = '90'; gyroSelect.value = 'off'; fingerSelect.value = '4'; }
+                else if (p === 'balanced') { ramSelect.value = '4'; playstyleSelect.value = 'Balanced'; refreshSelect.value = '120'; gyroSelect.value = 'on'; fingerSelect.value = '4'; }
+                else if (p === 'nonGyro') { ramSelect.value = '4'; playstyleSelect.value = 'Balanced'; refreshSelect.value = '90'; gyroSelect.value = 'off'; fingerSelect.value = '4'; }
+                if (!brandSelect.value) brandSelect.value = 'Xiaomi';
+                calculate();
+                this.style.borderColor = 'rgba(59,130,246,0.5)';
+                setTimeout(() => { this.style.borderColor = ''; }, 400);
+            });
+        });
+
+        // ===== FAQ =====
+        document.querySelectorAll('.faq-q').forEach(q => {
+            q.addEventListener('click', function() {
+                const a = this.nextElementSibling;
+                const icon = this.querySelector('.icon');
+                const isOpen = a.classList.contains('show');
+                document.querySelectorAll('.faq-a.show').forEach(x => {
+                    if (x !== a) {
+                        x.classList.remove('show');
+                        const prevQ = x.previousElementSibling;
+                        if (prevQ) {
+                            prevQ.classList.remove('open');
+                            const pi = prevQ.querySelector('.icon');
+                            if (pi) pi.style.transform = '';
+                        }
+                    }
+                });
+                if (isOpen) {
+                    a.classList.remove('show');
+                    this.classList.remove('open');
+                    if (icon) icon.style.transform = '';
+                } else {
+                    a.classList.add('show');
+                    this.classList.add('open');
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        // ===== EVENTS =====
+        document.getElementById('calcBtn').addEventListener('click', calculate);
+        [brandSelect, ramSelect, playstyleSelect, refreshSelect, fingerSelect, gyroSelect, fpsSelect, attachSelect].forEach(el => {
+            el.addEventListener('change', calculate);
+        });
+
+        // ===== INITIAL =====
+        brandSelect.value = 'Xiaomi';
+        ramSelect.value = '4';
+        playstyleSelect.value = 'Balanced';
+        refreshSelect.value = '120';
+        fingerSelect.value = '4';
+        gyroSelect.value = 'on';
+        fpsSelect.value = 'Smooth';
+        attachSelect.value = 'both';
+        calculate();
+
+    })();
+</script>
+</body>
+</html>
